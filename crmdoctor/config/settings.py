@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if int(os.environ['DEBUG']) == 1 else False
 
 ALLOWED_HOSTS = ['bot.doc-crm.net', 'localhost']
 
@@ -70,11 +70,11 @@ if DEBUG:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': 'doccrm_bot',
             'USER': 'doccrm_bot',
-            'PASSWORD': 'jdpt8y5cXNDuNYEM',
-            'HOST': 'localhost',
+            'PASSWORD': os.environ['PG_PASSWORD'],
+            'HOST': os.environ['PG_HOST'],
             'PORT': '',
         }
     }
