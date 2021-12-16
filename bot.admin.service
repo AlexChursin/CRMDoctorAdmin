@@ -1,0 +1,15 @@
+[Unit]
+Description=django admin bot
+After=network.target
+
+[Service]
+User=achursin
+Group=www-data
+WorkingDirectory=/var/www/bot.doc-crm.net/CRMDoctorAdmin/crmdoctor
+ExecStart=/var/www/bot.doc-crm.net/CRMDoctorAdmin/crmdoctor/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/var/www/bot.doc-crm.net/CRMDoctorAdmin/crmdoctor/myproject.sock myproject.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+
