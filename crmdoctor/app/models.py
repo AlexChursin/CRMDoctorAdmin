@@ -1,20 +1,42 @@
-from datetime import datetime
-
 from django.db import models
 
 
-class TelegramChat(models.Model):
-    chat_id: int = models.IntegerField('id пользователя в телеграмме', unique=True, primary_key=True)
-    username = models.CharField('пользователь в телеграмм', max_length=100, null=True, blank=True)
-    tg_firstname = models.CharField('имя в телеграмм', max_length=100, null=True, blank=True)
-    tg_lastname = models.CharField('фамилия в телеграмм', max_length=100, null=True, blank=True)
-    dialog_id: int = models.IntegerField('id диалога', null=True, blank=True)
-    consulate_id: int = models.IntegerField('id консультации', null=True, blank=True)
-    created: datetime = models.DateTimeField('создано', auto_now=True)
-    updated: datetime = models.DateTimeField('обновлено', auto_now_add=True)
+class Consulate(models.Model):
+    user_id = models.IntegerField('id пользователя в телеграмме')
+    reason_petition = models.CharField('Причина обращения', max_length=20, null=True, blank=True)
+    select_day = models.CharField('Выбранный день', max_length=20, null=True, blank=True)
+    select_time = models.CharField('Выбранное время', max_length=20, null=True, blank=True)
+    select_schedule_id = models.CharField('Выбранный id даты', max_length=20, null=True, blank=True)
+    select_is_emergency = models.BooleanField('Выбрана срочная консультация', default=False)
+    dialog_id = models.IntegerField('id диалога', null=True, blank=True)
+    cons_token = models.CharField('токен консультации', max_length=120, null=True, blank=True)
+
+    created = models.DateTimeField('создано', auto_now=True)
+    updated = models.DateTimeField('обновлено', auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.reason_petition}'
+
+
+class TelegramUser(models.Model):
+    user_id = models.IntegerField('id пользователя в телеграмме', unique=True, primary_key=True)
+    chat_id = models.IntegerField('id чата в телеграмме')
+    status = models.IntegerField('статус', default=1)
+    age = models.IntegerField('Возраст', null=True, blank=True)
+    phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
+    consulate = models.ForeignKey(Consulate, models.CASCADE, verbose_name='текущая консультация', null=True, blank=True)
+    first_middle_name = models.CharField('Имя Отчество', max_length=100, null=True, blank=True)
+    doctor_name = models.CharField('имя доктора', max_length=120, null=True, blank=True)
+    doctor_name_p = models.CharField('имя доктора в падеже', max_length=120, null=True, blank=True)
+    doctor_token = models.CharField('токен доктора', max_length=120, null=True, blank=True)
+    client_token = models.CharField('токен пациента', max_length=120, null=True, blank=True)
+
+    created = models.DateTimeField('создано', auto_now=True)
+    updated = models.DateTimeField('обновлено', auto_now_add=True)
 
     class Meta:
         db_table = "telegram_users"
+        verbose_name = 'Телеграмм пользователь'
 
 
 class BotTextConfig(models.Model):

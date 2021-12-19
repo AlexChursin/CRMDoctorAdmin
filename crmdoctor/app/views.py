@@ -1,3 +1,4 @@
+import logging
 from http import HTTPStatus
 from typing import List
 
@@ -16,34 +17,52 @@ config_router = Router()
 util_router = Router()
 
 
-@tg_router.post("/chat", response={HTTPStatus.CREATED: schemas.TelegramChat, HTTPStatus.CONFLICT: schemas.Message})
-def create_chat(request, chat: schemas.TelegramChatPost):
+@tg_router.post("/client", response={HTTPStatus.CREATED: schemas.TelegramUser, HTTPStatus.CONFLICT: schemas.Message})
+def create_client(request, client: schemas.TelegramUserPost):
     try:
-        chat = models.TelegramChat.objects.create(**chat.dict())
-    except IntegrityError:
-        return HTTPStatus.CONFLICT, schemas.Message(detail=f'chat_id = {chat.chat_id} already exist')
-    return HTTPStatus.CREATED, chat
+        client_db = models.TelegramUser.objects.create(**client.dict())
+    except Exception as e:
+        logging.warning(e)
+        return HTTPStatus.CONFLICT, schemas.Message(detail=f'user_id = {client.user_id} already exist')
+    return HTTPStatus.CREATED, client_db
 
 
-@tg_router.get("/chat/{pk}", response={HTTPStatus.OK: schemas.TelegramChat})
-def get_chat(request, pk: int):
-    chat_db = get_object_or_404(models.TelegramChat, pk=pk)
+@tg_router.post("/client/{user_id}/consulate", response={HTTPStatus.CREATED: schemas.TelegramUser,
+                                                         HTTPStatus.NOT_FOUND: schemas.Message})
+def create_consulate(request, user_id: int, consulate: schemas.ConsulatePost):
+    client_db = get_object_or_404(models.TelegramUser, pk=user_id)
+    consulate_db = models.Consulate.objects.create(**consulate.dict())
+    client_db.consulate_id = consulate_db.pk
+    client_db.save()
+    return HTTPStatus.CREATED, client_db
+
+
+@tg_router.put("/client/{user_id}", response={HTTPStatus.OK: schemas.TelegramUser})
+def put_client(request, user_id: int, client: schemas.TelegramUserPut):
+    client_db = get_object_or_404(models.TelegramUser, pk=user_id)
+    for attr, value in client.dict().items():
+        if  attr == 'consulate_id':
+            continue
+        if attr != 'consulate':
+            setattr(client_db, attr, value)
+        else:
+            if client.consulate is not None:
+                consulate = schemas.ConsulatePost(**client.consulate.dict())
+                if client_db.consulate is not None:
+                    for a, v in consulate.dict().items():
+                        setattr(client_db.consulate, a, v)
+            else:
+                client_db.consulate = None
+
+    client_db.save()
+    return HTTPStatus.OK, client_db
+
+
+@tg_router.get("/client/{user_id}", response={HTTPStatus.OK: schemas.TelegramUser,
+                                              HTTPStatus.NOT_FOUND: schemas.Message})
+def get_client(request, user_id: int):
+    chat_db = get_object_or_404(models.TelegramUser, pk=user_id)
     return HTTPStatus.OK, chat_db
-
-
-@tg_router.patch("/chat/{pk}", response={HTTPStatus.OK: schemas.TelegramChat})
-def patch_chat(request, pk: int, chat: schemas.TelegramChatPatch):
-    chat_db = get_object_or_404(models.TelegramChat, pk=pk)
-    for k, v in chat.dict(exclude_none=True).items():
-        setattr(chat_db, k, v)
-    chat_db.save()
-    return HTTPStatus.OK, chat_db
-
-
-@tg_router.get("/chats", response={HTTPStatus.OK: List[schemas.TelegramChat]})
-def get_chats(request, filter: schemas.TelegramChatPatch = Query(...)):
-    chat = models.TelegramChat.objects.filter(**filter.dict(exclude_none=True)).all()
-    return HTTPStatus.OK, chat
 
 
 @config_router.get("/config/text", response={HTTPStatus.OK: List[schemas.BotConfig]})
