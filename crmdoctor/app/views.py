@@ -41,7 +41,7 @@ def create_consulate(request, user_id: int, consulate: schemas.ConsulatePost):
 def put_client(request, user_id: int, client: schemas.TelegramUserPut):
     client_db = get_object_or_404(models.TelegramUser, pk=user_id)
     for attr, value in client.dict().items():
-        if  attr == 'consulate_id':
+        if attr == 'consulate_id':
             continue
         if attr != 'consulate':
             setattr(client_db, attr, value)
@@ -51,6 +51,7 @@ def put_client(request, user_id: int, client: schemas.TelegramUserPut):
                 if client_db.consulate is not None:
                     for a, v in consulate.dict().items():
                         setattr(client_db.consulate, a, v)
+                    client_db.consulate.save()
             else:
                 client_db.consulate = None
 
@@ -80,7 +81,7 @@ async def utils(
         middle_name: str = 'Владимировна',
         last_name: str = 'Сидорова',
         case: Padej = Padej.GENITIVE,
-        gender: MyGender = MyGender.FEMALE
+        gender: MyGender = MyGender.MALE
 ):
     p_case = [Case(i) for i, p in enumerate(Padej) if case.name == p.name][0]
     p_gender = [Gender(i) for i, p in enumerate(MyGender) if gender.name == p.name][0]

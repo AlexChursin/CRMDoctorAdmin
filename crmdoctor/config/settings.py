@@ -15,7 +15,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if int(os.environ['DEBUG']) == 1 else False
 
-ALLOWED_HOSTS = ['bot.doc-crm.net', '127.0.0.1']
+ALLOWED_HOSTS = ['bot.doc-crm.net', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

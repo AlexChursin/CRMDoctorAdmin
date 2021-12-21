@@ -12,12 +12,14 @@ class ConsulatePost(Schema):
     select_day: Optional[str] = None
     select_time: Optional[str] = None
     select_schedule_id: Optional[str] = None
-    select_is_emergency: bool = None
+    select_is_emergency: bool = False
     dialog_id: Optional[int] = None
     cons_token: Optional[str] = None
 
 
 class TelegramUserPut(Schema):
+    user_id: int
+    chat_id: int
     status: int = 1
     age: Optional[int] = None
     phone: Optional[str] = None
@@ -31,8 +33,7 @@ class TelegramUserPut(Schema):
 
 
 class TelegramUserPost(TelegramUserPut):
-    user_id: int
-    chat_id: int
+    pass
 
 
 class TelegramUser(TelegramUserPut):
