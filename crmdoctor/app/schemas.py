@@ -8,6 +8,7 @@ from ninja.params import Param
 
 class ConsulatePost(Schema):
     user_id: int
+    chat_id: Optional[int]
     reason_petition: Optional[str] = None
     select_day: Optional[str] = None
     select_time: Optional[str] = None

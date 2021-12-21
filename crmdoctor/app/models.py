@@ -3,6 +3,7 @@ from django.db import models
 
 class Consulate(models.Model):
     user_id = models.IntegerField('id пользователя в телеграмме')
+    chat_id = models.IntegerField('id чата в телеграмме', null=True, blank=True)
     reason_petition = models.CharField('Причина обращения', max_length=20, null=True, blank=True)
     select_day = models.CharField('Выбранный день', max_length=20, null=True, blank=True)
     select_time = models.CharField('Выбранное время', max_length=20, null=True, blank=True)

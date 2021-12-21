@@ -3,7 +3,7 @@ from http import HTTPStatus
 from typing import List
 
 from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from pytrovich.enums import NamePart, Gender, Case
 from pytrovich.maker import PetrovichDeclinationMaker
 from ninja import Router, Query
@@ -64,6 +64,18 @@ def put_client(request, user_id: int, client: schemas.TelegramUserPut):
 def get_client(request, user_id: int):
     chat_db = get_object_or_404(models.TelegramUser, pk=user_id)
     return HTTPStatus.OK, chat_db
+
+
+@tg_router.get("/consulate/dialog/{dialog_id}", response={HTTPStatus.OK: schemas.ConsulatePost,
+                                                          HTTPStatus.NOT_FOUND: schemas.Message,
+                                                          HTTPStatus.NO_CONTENT: schemas.Message})
+def get_consulate(request, dialog_id: int):
+    consulate_db = get_list_or_404(models.Consulate, dialog_id=dialog_id)[-1]
+  #  chat_db = get_object_or_404(models.TelegramUser, pk=consulate_db.user_id)
+
+    if consulate_db.dialog_id is not None:
+        return HTTPStatus.OK, consulate_db
+    return HTTPStatus.NO_CONTENT, schemas.Message(detail='client dialog_id empty')
 
 
 @config_router.get("/config/text", response={HTTPStatus.OK: List[schemas.BotConfig]})
