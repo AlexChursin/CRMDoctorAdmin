@@ -73,8 +73,8 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'doccrm_bot',
             'USER': 'doccrm_bot',
-            'PASSWORD': os.environ['PG_PASSWORD'],
-            'HOST': os.environ['PG_HOST'],
+            'PASSWORD': os.environ['MYSQL_PASSWORD'],
+            'HOST': os.environ['MYSQL_HOST'],
             'PORT': '',
         }
     }
