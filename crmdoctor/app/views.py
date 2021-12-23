@@ -1,11 +1,12 @@
 import logging
 from http import HTTPStatus
-from typing import List
+from typing import List, Optional
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, get_list_or_404
+from pytrovich.detector import PetrovichGenderDetector
 from pytrovich.enums import NamePart, Gender, Case
-from pytrovich.maker import PetrovichDeclinationMaker
+from pytrovich.maker import PetrovichDeclinationMaker, Gender
 from ninja import Router, Query
 
 from . import models
@@ -84,6 +85,7 @@ def get_text_config(request):
 
 
 maker = PetrovichDeclinationMaker()
+detector = PetrovichGenderDetector()
 
 
 @util_router.get("/utils/petrovich", response={HTTPStatus.OK: Petrovich})
@@ -93,12 +95,11 @@ async def utils(
         middle_name: str = 'Владимировна',
         last_name: str = 'Сидорова',
         case: Padej = Padej.GENITIVE,
-        gender: MyGender = MyGender.MALE
+        gender: Optional[MyGender] = MyGender.MALE
 ):
     p_case = [Case(i) for i, p in enumerate(Padej) if case.name == p.name][0]
-    p_gender = [Gender(i) for i, p in enumerate(MyGender) if gender.name == p.name][0]
-
-    f = maker.make(NamePart.FIRSTNAME, p_gender, p_case, original_name=first_name)
-    m = maker.make(NamePart.MIDDLENAME, p_gender, p_case, middle_name)
-    l = maker.make(NamePart.LASTNAME, p_gender, p_case, last_name)
+    gender = detector.detect(firstname=first_name, middlename=first_name)
+    f = maker.make(NamePart.FIRSTNAME, gender, p_case, original_name=first_name)
+    m = maker.make(NamePart.MIDDLENAME, gender, p_case, middle_name)
+    l = maker.make(NamePart.LASTNAME, gender, p_case, last_name)
     return Petrovich(first_name=f, middle_name=m, last_name=l)
