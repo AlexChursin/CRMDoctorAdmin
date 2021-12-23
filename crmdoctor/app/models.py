@@ -18,6 +18,10 @@ class Consulate(models.Model):
     def __str__(self):
         return f'{self.reason_petition}'
 
+    class Meta:
+        verbose_name = 'консультация'
+        verbose_name_plural = 'консультации'
+
 
 class TelegramUser(models.Model):
     user_id = models.IntegerField('id пользователя в телеграмме', unique=True, primary_key=True)
@@ -37,7 +41,8 @@ class TelegramUser(models.Model):
 
     class Meta:
         db_table = "telegram_users"
-        verbose_name = 'Телеграмм пользователь'
+        verbose_name = 'телеграмм пользователь'
+        verbose_name_plural = 'телеграмм пользователи'
 
 
 class BotTextConfig(models.Model):
@@ -47,3 +52,5 @@ class BotTextConfig(models.Model):
 
     class Meta:
         db_table = "bot_text_config"
+        verbose_name = 'текстовый конфиг'
+        verbose_name_plural = 'текстовые конфиги'
