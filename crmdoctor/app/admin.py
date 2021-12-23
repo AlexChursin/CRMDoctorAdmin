@@ -21,4 +21,5 @@ class TelegramConsulateAdmin(admin.ModelAdmin):
 @admin.register(BotTextConfig)
 class BotTextConfigAdmin(admin.ModelAdmin):
     search_fields = ("param", 'value')
-    list_display = ("param", 'value')
+    list_display = ("param", 'value', 'type')
+    list_filter = ('type',)
