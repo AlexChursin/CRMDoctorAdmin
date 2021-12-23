@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from ninja import Schema, ModelSchema
 from ninja.orm import create_schema
@@ -47,6 +47,9 @@ class BotConfig(Schema):
     param: str = Param(default=None, description='парамметр')
     value: str = Param(default=None, description='значение')
 
+class TextConfig(Schema):
+    texts: List[BotConfig]
+    buttons: List[BotConfig]
 
 class Message(Schema):
     """Сообщение"""

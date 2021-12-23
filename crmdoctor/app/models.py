@@ -43,6 +43,7 @@ class TelegramUser(models.Model):
 class BotTextConfig(models.Model):
     param = models.CharField('парамметр', max_length=30)
     value = models.CharField('значение', max_length=500)
+    type = models.IntegerField('тип', choices=[(1, 'Текст'), (2, 'Кнопка')], null=True)
 
     class Meta:
         db_table = "bot_text_config"

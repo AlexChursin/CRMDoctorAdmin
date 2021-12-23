@@ -79,9 +79,13 @@ def get_consulate(request, dialog_id: int):
     return HTTPStatus.NO_CONTENT, schemas.Message(detail='client dialog_id empty')
 
 
-@config_router.get("/config/text", response={HTTPStatus.OK: List[schemas.BotConfig]})
+@config_router.get("/text_config", response={HTTPStatus.OK: schemas.TextConfig})
 def get_text_config(request):
-    return HTTPStatus.OK, models.BotTextConfig.objects.all()
+    buttons = models.BotTextConfig.objects.filter(type=1).all()
+    texts = models.BotTextConfig.objects.filter(type=2).all()
+    buttons = [schemas.BotConfig.from_orm(b) for b in buttons]
+    texts = [schemas.BotConfig.from_orm(t) for t in texts]
+    return HTTPStatus.OK, schemas.TextConfig(texts=texts, buttons=buttons)
 
 
 maker = PetrovichDeclinationMaker()
