@@ -81,8 +81,8 @@ def get_consulate(request, dialog_id: int):
 
 @config_router.get("/text_config", response={HTTPStatus.OK: schemas.TextConfig})
 def get_text_config(request):
-    buttons = models.BotTextConfig.objects.filter(type=1).all()
-    texts = models.BotTextConfig.objects.filter(type=2).all()
+    buttons = models.BotTextConfig.objects.filter(type=2).all()
+    texts = models.BotTextConfig.objects.filter(type=1).all()
     buttons = [schemas.BotConfig.from_orm(b) for b in buttons]
     texts = [schemas.BotConfig.from_orm(t) for t in texts]
     return HTTPStatus.OK, schemas.TextConfig(texts=texts, buttons=buttons)
