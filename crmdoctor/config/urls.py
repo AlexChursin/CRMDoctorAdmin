@@ -3,9 +3,9 @@ from django.urls import path
 from ninja import NinjaAPI
 from app.views import tg_router, config_router, util_router
 
-admin.site.site_header = 'Doccrm Админ панель пациента'
-admin.site.index_title = 'Doccrm конфиг бота и данные о пациенте'
-admin.site.site_title = 'Doccrm Админ панель пациента'
+admin.site.site_header = 'DocCRM Админ панель пациента'
+admin.site.index_title = 'DocCRM конфиг бота и данные о пациенте'
+admin.site.site_title = 'DocCRM Админ панель пациента'
 
 api = NinjaAPI(title='API MESSENGER', description='Сервис интеграции мессенжеров CRM-DOC с основным бекендом', docs_url='/swagger')
 api.add_router('/api', tg_router, tags=['Telegram'])
