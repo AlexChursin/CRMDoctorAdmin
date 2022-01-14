@@ -8,6 +8,27 @@ class TelegramUserAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     list_display = ("user_id", 'consulate', 'chat_id', 'status', 'age', 'phone', 'first_middle_name',  'created', 'updated')
 
+    # add action
+    actions = ['make_copy', 'custom_button']
+
+    def custom_button(self, request, queryset):
+        pass
+
+    # display text，Consistent with django admin
+    custom_button.short_description = 'Test Button'
+    # icon，reference：element-ui icon and https://fontawesome.com
+    custom_button.icon = 'fas fa-audio-description'
+
+    # Specify button type：https://element.eleme.cn/#/zh-CN/component/button
+    custom_button.type = 'danger'
+
+    # Custom style
+    custom_button.style = 'color:black;'
+
+    def make_copy(self, request, queryset):
+        pass
+
+    make_copy.short_description = 'Copy employe'
 
 @admin.register(Consulate)
 class TelegramConsulateAdmin(admin.ModelAdmin):
