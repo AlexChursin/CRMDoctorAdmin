@@ -7,8 +7,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from pytrovich.detector import PetrovichGenderDetector
 from pytrovich.enums import NamePart, Gender, Case
 from pytrovich.maker import PetrovichDeclinationMaker, Gender
-from ninja import Router, Query
-
+from ninja import Router, Query 
 from . import models
 from . import schemas
 from .util_schemas import MyGender, Padej, Petrovich
@@ -61,7 +60,7 @@ def put_client(request, user_id: int, client: schemas.TelegramUserPut):
 
 
 @tg_router.get("/client/{user_id}", response={HTTPStatus.OK: schemas.TelegramUser,
-                                              HTTPStatus.NOT_FOUND: schemas.Message})
+                                              HTTPStatus.NOT_FOUND: schemas.Message}, )
 def get_client(request, user_id: int):
     chat_db = get_object_or_404(models.TelegramUser, pk=user_id)
     return HTTPStatus.OK, chat_db
